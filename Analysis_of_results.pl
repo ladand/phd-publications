@@ -38,7 +38,7 @@ unless(-d $result_directory){ mkdir $result_directory or die $! ;}
 $matlab_files = $result_directory."/Matlab_Files" ;
 unless(-d $matlab_files){ mkdir $matlab_files or die $! ;}
 
-$dir_files = $pwd."/Files_needed" ;
+$dir_files = $pwd."/Files_Needed" ;
 
 #&Download_go_daily;
 &Fix_Extreme_set ;
