@@ -1,4 +1,3 @@
-
 use Cwd;
 use IO::Handle;
 use File::Copy;
@@ -75,11 +74,7 @@ sub Download_go_daily {
     my $file_go_obo = 'go_daily-termdb.obo-xml.gz';
     $status = getstore($url, $file_go_obo);
     #die "Error $status on $url" unless is_success($status);
-    #while (!(-e $file_go_obo)) { print "File $file_go_obo is now downloaded!"; }
-    # system "file go_daily-termdb.obo-xml.gz" ;
     # system "gzip -d go_daily-termdb.obo-xml.gz" ;
-    # $status = getstore($url, $file_go_obo);
-
     #unlink("$dir_files/go_daily-termdb.obo-xml.gz") ;
     print "Downloaded go_daily-termdb.obo-xml.gz and extracted.\t".(localtime),"\n"; ;
 
@@ -251,33 +246,11 @@ sub Create_MCL {
 
 sub Copy_Files {
 
-    #$path1 = $result_directory."/6a_".$number_es."_gs2" ;    
-    #$path2 = $result_directory."/6b_".$number_es."_Prediction_for_GS2" ; 
-    #$path3 = $result_directory."/6c_".$number_es."_compare_predictions" ;    
-
-    #unless(-d $path1){ mkdir $path1 or die $! ;}
-    #unless(-d $path2){ mkdir $path2 or die $! ;}
-    #unless(-d $path3){ mkdir $path3 or die $! ;}
-
     copy("$dir_files/Orig_pyGS2.py",$result_directory) or die "Failed to copy Orig_pyGS2.py $!\n";
     copy("$dir_files/go_daily-termdb.obo-xml",$result_directory) or die "Failed to copy go_daily-termdb.obo-xml $!\n";
-    #copy("$dir_files/3_make_GS2_Data.pl",$path1) or die "Failed to copy $file: $!\n";
-    #copy("$dir_files/2_remove_id_GO.pl",$path1) or die "Failed to copy $file: $!\n";
     copy("$dir_files/Halophiles_id_GOs.txt",$result_directory) or die "Failed to copy Halophiles_id_GOs.txt $!\n";
-
     copy("$dir_files/1_print_out_neighbors.py",$result_directory) or die "Failed to copy 1_print_out_neighbors.py $!\n";
-    #copy("$dir_files/2_find_half_known.pl",$path2) or die "Failed to copy $file: $!\n";
-    #copy("$dir_files/list_of_neighbors_of_Halophiles_data_known",$path2) or die "Failed to copy $file: $!\n";
-    #copy("$dir_files/3_prediction_using_neighbors_in_Cluster.pl",$path2) or die "Failed to copy $file: $!\n";
-    #copy("$dir_files/3_prediction_using_all_Cluster.pl",$path2) or die "Failed to copy $file: $!\n";
-
-
-    #copy("$dir_files/1_Compare_go_predictions.pl",$path3) or die "Failed to copy $file: $!\n";
-    #copy("$dir_files/2_find_clusters_of_differences.pl",$path3) or die "Failed to copy $file: $!\n";
-    #copy("$dir_files/3_How_correct.pl",$path3) or die "Failed to copy $file: $!\n";
-    #copy("$dir_files/ReadMe.txt",$path3) or die "Failed to copy $file: $!\n";
-    #copy("$dir_files/4_Cluster_sizes.pl",$path3) or die "Failed to copy $file: $!\n";
-
+    
     print "All copies are done and files are generated.\t".(localtime),"\n"; ;
 }
 ################################################################################################
@@ -333,7 +306,6 @@ sub GS2_Generator {
     
     #print "what is the percentage of missing data?\n" ;
 
-    #$miss = 5 ; #This is were I set missing rate.
     $some = $result_directory."/".$original_miss."_removed_Halophiles_id_GOs.txt" ;
     print ".......Looking at $original_miss % missing data to generate GS2.\n" ;
     open (GO_FILES, "<$some") or die $!; 
@@ -459,18 +431,10 @@ sub GS2_Generator {
         $new_pwd = getcwd() ;
         system("python", "GS2_ES_data.py") == 0 or die "Python script returned error $?";
         print ".......Done with python file for ES\n" ;
-        # unlink("GS2_ES_data.py") ;
-        # if(-e "GS2_ES_data.py") { print "File GS2_ES_data.py still exists!"; }
-        # else { print ".......GS2_ES_data.py is now deleted.\n" ;}
-        
-        #print "$path2\n" ;
         my @path_files = <$path2/*>;
         foreach $filee (@path_files) {
             chdir("$filee") or die "$! for changing directory";
             system("python", "GS2_MCL_data.py") == 0 or die "Python script returned error $?";
-            # unlink("GS2_MCL_data.py") ;
-            # if(-e "GS2_MCL_data.py") { print "File GS2_MCL_data.py still exists for MCL with inflation $filee!"; }
-            # else { print ".......GS2_MCL_data.py is now deleted for MCL with inflation $filee.\n" ;}
         }
         print ".......Done with python file for MCL files\n" ;
         my @path_files = <$path2/*>;
@@ -875,7 +839,7 @@ sub Prediction_Using_All {
 
         open (final_output, ">$dirr2/All_Final_predictions_for_MCL_$filee.txt") or die $!;
         foreach $kilid (keys %hash_fix){
-            print final_output "$kilid\t$hash_fix{$kilid}\n" ; #---------->11/1
+            print final_output "$kilid\t$hash_fix{$kilid}\n" ; 
         
         }
 
@@ -1029,11 +993,11 @@ sub Prediction_Using_Only_Neighbors{
                 if ($unknown_gos_in_es{$now_known} =~ m/_/){ #it was more than once
                     @predicted_gos = split ("_",$unknown_gos_in_es{$now_known}) ;
                     
-                %hash_string_set = map { $_ => 1 } @predicted_gos; #---------->10/29
+                %hash_string_set = map { $_ => 1 } @predicted_gos; 
                 @predicted_gos = keys %hash_string_set ;
                 $go_term_predicted = join(",",@predicted_gos) ;
 
-                $unknown_gos_in_es{$now_known} = $go_term_predicted ; #---------->11/1 (changed comma for colon)
+                $unknown_gos_in_es{$now_known} = $go_term_predicted ;
                 }
                 print predict_file "$now_known\t$unknown_gos_in_es{$now_known}\n" ; 
             }
@@ -1335,7 +1299,6 @@ sub Compare_predictions{
     }
     close(ES) ;
 
-    #$path_predicted = $result_directory."/predicted_".$number_mcl ;
     $path_predicted = $result_directory."/MCL_".$number_mcl ;
     my @path_files = <$path_predicted/*>;
     foreach $filee (@path_files) {
@@ -1479,8 +1442,6 @@ sub Clusters_of_difference{
 
     }
 
-    #$path2 = $result_directory."/Comparing_".$number_mcl ;
-    #unless(-d $path2){ mkdir $path2 or die $! ;}
     open (Output, ">$result_directory/clustered_comparison_between_ES_MCL_predictions.txt") or die $! ;
     if ($flag){
         open (input, "<$result_directory/All_Comparison_between_ES_MCL_predictions.txt") or die $! ;
@@ -2170,8 +2131,6 @@ sub Cleaning_files{
     system "rm -rf $file" ;
     unlink("$file") ;
     
-    #if(-e Separate_ES_files_$ES_file) { print "File Separate_ES_files_$ES_file still exists!"; }
-    #else { print ".......Separate_ES_files_$ES_file file is now deleted.\n" ;}
 
     $path= $result_directory."/MCL_".$number_mcl ;
     my @path_files = <$path/*>;
