@@ -1,0 +1,10 @@
+Firmicutes	#999999
+Proteobacteria	#CDA12C
+Bacteroidetes	#FFF52F
+Actinobacteria	#BF6163
+Fusobacteria	#49A75A
+Tenericutes	#B25C3E
+Spirochaetes	#EE83BB
+Synergistetes	#21abcd
+SR1	#7C5578
+UnAssigned	#E41A1C
